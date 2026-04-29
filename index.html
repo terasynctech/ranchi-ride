@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RanchiRide - Book Taxi</title>
+
+<style>
+body {font-family: Arial; margin:0;}
+header {background:#000; color:#fff; padding:15px; text-align:center;}
+
+.hero {
+  background:url('images/banner.jpg') no-repeat center/cover;
+  color:#fff; padding:80px 20px; text-align:center;
+}
+
+.btn {
+  background:#ffcc00;
+  padding:10px 20px;
+  text-decoration:none;
+  color:#000;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+}
+
+.section {padding:40px; text-align:center;}
+
+input, select {
+  width:260px;
+  padding:10px;
+  margin:8px;
+}
+
+.card {
+  border:1px solid #ddd;
+  margin:10px;
+  padding:20px;
+  width:250px;
+  display:inline-block;
+}
+
+footer {
+  background:#000;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>🚖 RanchiRide</h2>
+<p>Book Taxi Anytime in Ranchi</p>
+</header>
+
+<section class="hero">
+<h1>Book Your Ride in Ranchi</h1>
+<p>Airport | Local | Outstation</p>
+</section>
+
+<!-- BOOKING FORM -->
+<section class="section">
+<h2>Book Your Ride</h2>
+
+<form onsubmit="sendToWhatsApp(); return false;">
+
+<input type="text" id="pickup" placeholder="Pickup Location" required><br>
+
+<input type="text" id="drop" placeholder="Drop Location" required><br>
+
+<input type="datetime-local" id="datetime" required><br>
+
+<select id="car" onchange="calculatePrice()">
+<option value="12">Swift Dzire (₹12/km)</option>
+<option value="16">Innova (₹16/km)</option>
+<option value="22">Traveller (₹22/km)</option>
+</select><br>
+
+<input type="number" id="km" placeholder="Distance (KM)" oninput="calculatePrice()" required><br>
+
+<input type="text" id="mobile" placeholder="Your Mobile Number" required><br>
+
+<select id="package">
+<option value="None">Normal Ride</option>
+<option value="Airport Transfer">Airport Transfer</option>
+<option value="Full Day">Full Day Package</option>
+<option value="Wedding">Wedding Booking</option>
+</select><br>
+
+<h3 id="price">Estimated Price: ₹0</h3>
+
+<button class="btn" type="submit">Book via WhatsApp</button>
+
+</form>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+<h2>Our Services</h2>
+<div class="card">✈️ Airport Transfer</div>
+<div class="card">🏙️ Local Ride</div>
+<div class="card">🚗 Outstation</div>
+<div class="card">💍 Wedding</div>
+</section>
+
+<footer>
+<p>📍 Sainik Market, Main Road, Ranchi</p>
+<p>📞 WhatsApp: +91 76338 01161</p>
+<p>© RanchiRide | Powered by TeraSyncTech</p>
+</footer>
+
+<script>
+
+function calculatePrice() {
+  var km = document.getElementById("km").value;
+  var rate = document.getElementById("car").value;
+  var total = km * rate;
+
+  if(km && rate){
+    document.getElementById("price").innerHTML = "Estimated Price: ₹" + total;
+  }
+}
+
+function sendToWhatsApp() {
+
+  var pickup = document.getElementById("pickup").value;
+  var drop = document.getElementById("drop").value;
+  var datetime = document.getElementById("datetime").value;
+  var car = document.getElementById("car").options[document.getElementById("car").selectedIndex].text;
+  var km = document.getElementById("km").value;
+  var mobile = document.getElementById("mobile").value;
+  var packageType = document.getElementById("package").value;
+  var price = document.getElementById("price").innerText;
+
+  var mapLink = "https://www.google.com/maps/search/?api=1&query=" + pickup;
+
+  var message = "🚖 *RanchiRide Booking* %0A%0A"
+    + "📍 Pickup: " + pickup + "%0A"
+    + "🏁 Drop: " + drop + "%0A"
+    + "🕒 Date: " + datetime + "%0A"
+    + "🚗 Car: " + car + "%0A"
+    + "📏 Distance: " + km + " KM%0A"
+    + "💰 " + price + "%0A"
+    + "📦 Package: " + packageType + "%0A"
+    + "📱 Customer: " + mobile + "%0A"
+    + "🗺️ Map: " + mapLink;
+
+  var phone = "917633801161";
+
+  var url = "https://wa.me/" + phone + "?text=" + message;
+
+  window.open(url, '_blank');
+}
+
+</script>
+
+</body>
+</html>
