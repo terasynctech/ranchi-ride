@@ -79,13 +79,19 @@ input, select {
   border-radius:5px;
 }
 
-/* CARD */
+/* CARD BUTTON STYLE */
 .card {
   border:1px solid #ddd;
   margin:10px;
   padding:20px;
   width:250px;
   display:inline-block;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.card:hover {
+  background:#ffcc00;
 }
 
 /* FOOTER */
@@ -127,14 +133,14 @@ window.saveBooking = async function(data){
 <body>
 
 <header>
-  <img src="images/logo.png" id="mainLogo" style="height:50px;">
+  <img src="images/logo.png" style="height:50px;">
   <div>
     <h2 style="margin:0;">RanchiRide</h2>
     <p style="margin:0; font-size:12px;">Book Taxi Anytime in Ranchi</p>
   </div>
 </header>
 
-<!-- LOGO PREVIEW UPLOAD -->
+<!-- LOGO PREVIEW -->
 <div class="section">
 <h3>Preview Your Logo</h3>
 <input type="file" accept="image/*" onchange="previewLogo(event)">
@@ -170,7 +176,8 @@ window.saveBooking = async function(data){
 <select id="package">
 <option value="Normal Ride">Normal Ride</option>
 <option value="Airport Transfer">Airport Transfer</option>
-<option value="Full Day">Full Day</option>
+<option value="Local Ride">Local Ride</option>
+<option value="Outstation">Outstation</option>
 <option value="Wedding">Wedding</option>
 </select>
 
@@ -181,12 +188,15 @@ window.saveBooking = async function(data){
 </form>
 </section>
 
+<!-- CLICKABLE SERVICES -->
 <section class="section">
 <h2>Our Services</h2>
-<div class="card">✈️ Airport Transfer</div>
-<div class="card">🏙️ Local Ride</div>
-<div class="card">🚗 Outstation</div>
-<div class="card">💍 Wedding</div>
+
+<div class="card" onclick="selectService('Airport Transfer')">✈️ Airport Transfer</div>
+<div class="card" onclick="selectService('Local Ride')">🏙️ Local Ride</div>
+<div class="card" onclick="selectService('Outstation')">🚗 Outstation</div>
+<div class="card" onclick="selectService('Wedding')">💍 Wedding</div>
+
 </section>
 
 <footer>
@@ -197,7 +207,7 @@ window.saveBooking = async function(data){
 
 <script>
 
-/* LOGO PREVIEW FUNCTION */
+/* LOGO PREVIEW */
 function previewLogo(event){
   var reader = new FileReader();
   reader.onload = function(){
@@ -206,13 +216,38 @@ function previewLogo(event){
   reader.readAsDataURL(event.target.files[0]);
 }
 
+/* SERVICE CLICK */
+function selectService(service){
+  document.getElementById("package").value = service;
+
+  // Scroll to form
+  document.querySelector("form").scrollIntoView({behavior:"smooth"});
+
+  // Smart KM suggestion
+  if(service === "Airport Transfer"){
+    document.getElementById("km").value = 10;
+  }
+  else if(service === "Local Ride"){
+    document.getElementById("km").value = 5;
+  }
+  else if(service === "Outstation"){
+    document.getElementById("km").value = 50;
+  }
+  else if(service === "Wedding"){
+    document.getElementById("km").value = 20;
+  }
+
+  calculatePrice();
+}
+
 /* PRICE */
 function calculatePrice() {
   var km = document.getElementById("km").value;
   var rate = document.getElementById("car").value;
 
   if(km && rate){
-    var total = km * rate;
+    var baseFare = 50;
+    var total = (km * rate) + baseFare;
     document.getElementById("price").innerHTML = "Estimated Price: ₹" + Math.round(total);
   }
 }
