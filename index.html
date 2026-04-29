@@ -6,8 +6,12 @@
 <title>RanchiRide - Book Taxi</title>
 
 <style>
-body {font-family: Arial; margin:0;}
+body {
+  font-family: Arial;
+  margin:0;
+}
 
+/* HEADER */
 header {
   display:flex;
   align-items:center;
@@ -18,46 +22,67 @@ header {
   padding:15px;
 }
 
-<head>
-...
-<style>
-body {font-family: Arial; margin:0;}
-header {background:#000; color:#fff; padding:15px; text-align:center;}
-
+/* HERO FIXED */
 .hero {
-  background: url('images/banner.jpg') no-repeat center;
-  background-size: contain;
-  background-color: #000;
+  background: url('images/banner.png') no-repeat center;
+  background-size: cover;
   height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  text-align:center;
 }
-...
-</style>
-</head>
 
+.hero::before {
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+}
+
+.hero h1, .hero p {
+  position:relative;
+  z-index:1;
+}
+
+/* SECTION */
+.section {
+  padding:40px;
+  text-align:center;
+}
+
+/* FORM CENTER */
+form {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* INPUT */
+input, select {
+  width:300px;
+  padding:10px;
+  margin:8px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+/* BUTTON */
 .btn {
   background:#ffcc00;
-  padding:10px 20px;
-  text-decoration:none;
+  padding:12px 20px;
   color:#000;
   font-weight:bold;
   border:none;
   cursor:pointer;
+  border-radius:5px;
 }
 
-.section {padding:40px; text-align:center;}
-
-input, select {
-  width:260px;
-  padding:10px;
-  margin:8px;
-}
-
+/* CARD */
 .card {
   border:1px solid #ddd;
   margin:10px;
@@ -66,6 +91,7 @@ input, select {
   display:inline-block;
 }
 
+/* FOOTER */
 footer {
   background:#000;
   color:#fff;
@@ -74,7 +100,7 @@ footer {
 }
 </style>
 
-<!-- ✅ FIREBASE (CORRECT VERSION 10) -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -89,12 +115,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.saveBooking = async function(data){
-  try{
-    await addDoc(collection(db, "bookings"), data);
-    console.log("Booking Saved");
-  }catch(e){
-    console.error("Error:", e);
-  }
+  await addDoc(collection(db, "bookings"), data);
 }
 </script>
 
@@ -103,7 +124,7 @@ window.saveBooking = async function(data){
 <body>
 
 <header>
-  <img src="images/logo.png" alt="Logo" style="height:50px;">
+  <img src="images/logo.png" style="height:50px;">
   <div>
     <h2 style="margin:0;">RanchiRide</h2>
     <p style="margin:0; font-size:12px;">Book Taxi Anytime in Ranchi</p>
@@ -111,47 +132,44 @@ window.saveBooking = async function(data){
 </header>
 
 <section class="hero">
-<h1>Book Your Ride in Ranchi</h1>
-<p>Airport | Local | Outstation</p>
+  <h1>Book Your Ride in Ranchi</h1>
+  <p>Airport | Local | Outstation</p>
 </section>
 
-<!-- BOOKING FORM -->
 <section class="section">
 <h2>Book Your Ride</h2>
 
 <form onsubmit="sendToWhatsApp(); return false;">
 
-<input type="text" id="pickup" placeholder="Pickup Location" required><br>
+<input type="text" id="pickup" placeholder="Pickup Location" required>
+<input type="text" id="drop" placeholder="Drop Location" required>
 
-<input type="text" id="drop" placeholder="Drop Location" required><br>
-
-<input type="datetime-local" id="datetime" required><br>
+<input type="datetime-local" id="datetime" required>
 
 <select id="car" onchange="calculatePrice()">
 <option value="12">Swift Dzire (₹12/km)</option>
 <option value="16">Innova (₹16/km)</option>
 <option value="22">Traveller (₹22/km)</option>
-</select><br>
+</select>
 
-<input type="number" id="km" placeholder="Distance (KM)" oninput="calculatePrice()" required><br>
+<input type="number" id="km" placeholder="Distance (KM)" oninput="calculatePrice()" required>
 
-<input type="text" id="mobile" placeholder="Your Mobile Number" required><br>
+<input type="text" id="mobile" placeholder="Your Mobile Number" required>
 
 <select id="package">
-<option value="None">Normal Ride</option>
+<option value="Normal Ride">Normal Ride</option>
 <option value="Airport Transfer">Airport Transfer</option>
-<option value="Full Day">Full Day Package</option>
-<option value="Wedding">Wedding Booking</option>
-</select><br>
+<option value="Full Day">Full Day</option>
+<option value="Wedding">Wedding</option>
+</select>
 
 <h3 id="price">Estimated Price: ₹0</h3>
 
-<button class="btn" type="submit">Book via WhatsApp</button>
+<button class="btn">Book via WhatsApp</button>
 
 </form>
 </section>
 
-<!-- SERVICES -->
 <section class="section">
 <h2>Our Services</h2>
 <div class="card">✈️ Airport Transfer</div>
@@ -166,9 +184,7 @@ window.saveBooking = async function(data){
 <p>© RanchiRide | Powered by TeraSyncTech</p>
 </footer>
 
-<!-- MAIN SCRIPT -->
 <script>
-
 function calculatePrice() {
   var km = document.getElementById("km").value;
   var rate = document.getElementById("car").value;
@@ -190,40 +206,21 @@ function sendToWhatsApp() {
   var packageType = document.getElementById("package").value;
   var price = document.getElementById("price").innerText;
 
-  var mapLink = "https://www.google.com/maps/search/?api=1&query=" + pickup;
+  saveBooking({pickup, drop, datetime, car, km, mobile, packageType, price});
 
-  // ✅ SAVE TO FIREBASE
-  saveBooking({
-    pickup,
-    drop,
-    datetime,
-    car,
-    km,
-    mobile,
-    package: packageType,
-    price,
-    status: "Pending",
-    createdAt: new Date()
-  });
+  var message = "🚖 RanchiRide Booking %0A"
+    + "Pickup: " + pickup + "%0A"
+    + "Drop: " + drop + "%0A"
+    + "Date: " + datetime + "%0A"
+    + "Car: " + car + "%0A"
+    + "KM: " + km + "%0A"
+    + "Price: " + price + "%0A"
+    + "Mobile: " + mobile;
 
-  // ✅ WHATSAPP MESSAGE
-  var message = "🚖 *RanchiRide Booking* %0A%0A"
-    + "📍 Pickup: " + pickup + "%0A"
-    + "🏁 Drop: " + drop + "%0A"
-    + "🕒 Date: " + datetime + "%0A"
-    + "🚗 Car: " + car + "%0A"
-    + "📏 Distance: " + km + " KM%0A"
-    + "💰 " + price + "%0A"
-    + "📦 Package: " + packageType + "%0A"
-    + "📱 Customer: " + mobile + "%0A"
-    + "🗺️ Map: " + mapLink;
-
-  var phone = "917633801161";
-  var url = "https://wa.me/" + phone + "?text=" + message;
+  var url = "https://wa.me/917633801161?text=" + message;
 
   window.open(url, '_blank');
 }
-
 </script>
 
 </body>
