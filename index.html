@@ -7,11 +7,22 @@
 
 <style>
 body {font-family: Arial; margin:0;}
-header {background:#000; color:#fff; padding:15px; text-align:center;}
+
+header {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  background:#000;
+  color:#fff;
+  padding:15px;
+}
 
 .hero {
   background:url('images/banner.jpg') no-repeat center/cover;
-  color:#fff; padding:80px 20px; text-align:center;
+  color:#fff;
+  padding:80px 20px;
+  text-align:center;
 }
 
 .btn {
@@ -47,13 +58,41 @@ footer {
   text-align:center;
 }
 </style>
+
+<!-- ✅ FIREBASE (CORRECT VERSION 10) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveBooking = async function(data){
+  try{
+    await addDoc(collection(db, "bookings"), data);
+    console.log("Booking Saved");
+  }catch(e){
+    console.error("Error:", e);
+  }
+}
+</script>
+
 </head>
 
 <body>
 
 <header>
-<h2>🚖 RanchiRide</h2>
-<p>Book Taxi Anytime in Ranchi</p>
+  <img src="images/logo.png" alt="Logo" style="height:50px;">
+  <div>
+    <h2 style="margin:0;">RanchiRide</h2>
+    <p style="margin:0; font-size:12px;">Book Taxi Anytime in Ranchi</p>
+  </div>
 </header>
 
 <section class="hero">
@@ -112,6 +151,7 @@ footer {
 <p>© RanchiRide | Powered by TeraSyncTech</p>
 </footer>
 
+<!-- MAIN SCRIPT -->
 <script>
 
 function calculatePrice() {
@@ -137,6 +177,21 @@ function sendToWhatsApp() {
 
   var mapLink = "https://www.google.com/maps/search/?api=1&query=" + pickup;
 
+  // ✅ SAVE TO FIREBASE
+  saveBooking({
+    pickup,
+    drop,
+    datetime,
+    car,
+    km,
+    mobile,
+    package: packageType,
+    price,
+    status: "Pending",
+    createdAt: new Date()
+  });
+
+  // ✅ WHATSAPP MESSAGE
   var message = "🚖 *RanchiRide Booking* %0A%0A"
     + "📍 Pickup: " + pickup + "%0A"
     + "🏁 Drop: " + drop + "%0A"
@@ -149,7 +204,6 @@ function sendToWhatsApp() {
     + "🗺️ Map: " + mapLink;
 
   var phone = "917633801161";
-
   var url = "https://wa.me/" + phone + "?text=" + message;
 
   window.open(url, '_blank');
