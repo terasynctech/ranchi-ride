@@ -6,10 +6,7 @@
 <title>RanchiRide - Book Taxi</title>
 
 <style>
-body {
-  font-family: Arial;
-  margin:0;
-}
+body {font-family: Arial; margin:0;}
 
 /* HEADER */
 header {
@@ -22,7 +19,7 @@ header {
   padding:15px;
 }
 
-/* HERO FIXED */
+/* HERO */
 .hero {
   background: url('images/banner.png') no-repeat center;
   background-size: cover;
@@ -55,7 +52,7 @@ header {
   text-align:center;
 }
 
-/* FORM CENTER */
+/* FORM */
 form {
   display:flex;
   flex-direction:column;
@@ -98,6 +95,12 @@ footer {
   padding:20px;
   text-align:center;
 }
+
+/* LOGO PREVIEW */
+#logoPreview {
+  margin-top:10px;
+  max-height:60px;
+}
 </style>
 
 <!-- FIREBASE -->
@@ -124,12 +127,20 @@ window.saveBooking = async function(data){
 <body>
 
 <header>
-  <img src="images/logo.png" style="height:50px;">
+  <img src="images/logo.png" id="mainLogo" style="height:50px;">
   <div>
     <h2 style="margin:0;">RanchiRide</h2>
     <p style="margin:0; font-size:12px;">Book Taxi Anytime in Ranchi</p>
   </div>
 </header>
+
+<!-- LOGO PREVIEW UPLOAD -->
+<div class="section">
+<h3>Preview Your Logo</h3>
+<input type="file" accept="image/*" onchange="previewLogo(event)">
+<br>
+<img id="logoPreview">
+</div>
 
 <section class="hero">
   <h1>Book Your Ride in Ranchi</h1>
@@ -185,16 +196,28 @@ window.saveBooking = async function(data){
 </footer>
 
 <script>
+
+/* LOGO PREVIEW FUNCTION */
+function previewLogo(event){
+  var reader = new FileReader();
+  reader.onload = function(){
+    document.getElementById("logoPreview").src = reader.result;
+  }
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+/* PRICE */
 function calculatePrice() {
   var km = document.getElementById("km").value;
   var rate = document.getElementById("car").value;
-  var total = km * rate;
 
   if(km && rate){
-    document.getElementById("price").innerHTML = "Estimated Price: ₹" + total;
+    var total = km * rate;
+    document.getElementById("price").innerHTML = "Estimated Price: ₹" + Math.round(total);
   }
 }
 
+/* BOOKING */
 function sendToWhatsApp() {
 
   var pickup = document.getElementById("pickup").value;
@@ -221,6 +244,7 @@ function sendToWhatsApp() {
 
   window.open(url, '_blank');
 }
+
 </script>
 
 </body>
