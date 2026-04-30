@@ -212,16 +212,19 @@ function selectService(service){
   document.getElementById("package").value = service;
   document.querySelector("form").scrollIntoView({behavior:"smooth"});
 }
-
+<script>
 async function getDistance(){
-  const pickup = document.getElementById("pickup").value;
-  const drop = document.getElementById("drop").value;
+  const pickupInput = document.getElementById("pickup").value.trim();
+  const dropInput = document.getElementById("drop").value.trim();
 
-  if(!pickup || !drop) return;
+  if(!pickupInput || !dropInput) return;
 
   try{
-    const pickupUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(pickup)}`;
-    const dropUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(drop)}`;
+    const pickup = pickupInput + ", Ranchi, Jharkhand, India";
+    const drop = dropInput + ", Ranchi, Jharkhand, India";
+
+    const pickupUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(pickup)}`;
+    const dropUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(drop)}`;
 
     const pickupRes = await fetch(pickupUrl);
     const dropRes = await fetch(dropUrl);
@@ -230,7 +233,7 @@ async function getDistance(){
     const dropData = await dropRes.json();
 
     if(!pickupData.length || !dropData.length){
-      alert("Location not found");
+      alert("Location not found in Ranchi");
       return;
     }
 
@@ -244,19 +247,21 @@ async function getDistance(){
     const routeRes = await fetch(routeUrl);
     const routeData = await routeRes.json();
 
-    if(routeData.routes && routeData.routes.length > 0){
+    if(routeData.routes && routeData.routes.length){
       const km = (routeData.routes[0].distance / 1000).toFixed(1);
+
       document.getElementById("km").value = km;
       calculatePrice();
     }else{
-      alert("Unable to calculate distance");
+      alert("Route not available");
     }
 
   }catch(error){
     console.log(error);
-    alert("Distance service unavailable");
+    alert("Unable to calculate distance");
   }
 }
+</script>
 
 function calculatePrice(){
   let km = parseFloat(document.getElementById("km").value) || 0;
