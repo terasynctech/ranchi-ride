@@ -61,6 +61,7 @@ form{
   display:flex;
   flex-direction:column;
   align-items:center;
+  position:relative;
 }
 
 input,select{
@@ -82,6 +83,7 @@ input,select{
   border-radius:5px;
   width:90%;
   max-width:320px;
+  margin-top:8px;
 }
 
 #price{
@@ -111,12 +113,35 @@ footer{
   text-align:center;
 }
 
+.suggestions{
+  width:90%;
+  max-width:320px;
+  background:#fff;
+  border:1px solid #ddd;
+  border-top:none;
+  text-align:left;
+  z-index:99;
+}
+
+.suggestions div{
+  padding:8px;
+  cursor:pointer;
+}
+
+.suggestions div:hover{
+  background:#f3f3f3;
+}
+
 @media(max-width:600px){
   .hero{
     height:220px;
   }
 
   input,select,.btn{
+    width:95%;
+  }
+
+  .suggestions{
     width:95%;
   }
 }
@@ -161,8 +186,13 @@ window.saveBooking = async function(data){
 
 <form onsubmit="sendToWhatsApp(); return false;">
 
-<input type="text" id="pickup" placeholder="Pickup Location" onblur="getDistance()" required>
-<input type="text" id="drop" placeholder="Drop Location" onblur="getDistance()" required>
+<input type="text" id="pickup" placeholder="Pickup Location" oninput="showSuggestions('pickup')" required>
+<div id="pickup-list" class="suggestions"></div>
+
+<button type="button" class="btn" onclick="useCurrentLocation()">📍 Use My Location</button>
+
+<input type="text" id="drop" placeholder="Drop Location" oninput="showSuggestions('drop')" required>
+<div id="drop-list" class="suggestions"></div>
 
 <input type="datetime-local" id="datetime" required>
 
@@ -212,7 +242,57 @@ function selectService(service){
   document.getElementById("package").value = service;
   document.querySelector("form").scrollIntoView({behavior:"smooth"});
 }
-<script>
+
+async function showSuggestions(field){
+  const input = document.getElementById(field).value.trim();
+
+  if(input.length < 3) return;
+
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(input + ", Ranchi, Jharkhand")}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const list = document.getElementById(field + "-list");
+  list.innerHTML = "";
+
+  data.forEach(place=>{
+    const div = document.createElement("div");
+    div.innerText = place.display_name;
+    div.onclick = function(){
+      document.getElementById(field).value = place.display_name;
+      list.innerHTML = "";
+      getDistance();
+    };
+    list.appendChild(div);
+  });
+}
+
+function useCurrentLocation(){
+  if(!navigator.geolocation){
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async function(position){
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(data.display_name){
+      document.getElementById("pickup").value = data.display_name;
+      getDistance();
+    }
+
+  }, function(){
+    alert("Unable to get your location");
+  });
+}
+
 async function getDistance(){
   const pickupInput = document.getElementById("pickup").value.trim();
   const dropInput = document.getElementById("drop").value.trim();
@@ -220,11 +300,8 @@ async function getDistance(){
   if(!pickupInput || !dropInput) return;
 
   try{
-    const pickup = pickupInput + ", Ranchi, Jharkhand, India";
-    const drop = dropInput + ", Ranchi, Jharkhand, India";
-
-    const pickupUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(pickup)}`;
-    const dropUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(drop)}`;
+    const pickupUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(pickupInput)}`;
+    const dropUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(dropInput)}`;
 
     const pickupRes = await fetch(pickupUrl);
     const dropRes = await fetch(dropUrl);
@@ -233,7 +310,6 @@ async function getDistance(){
     const dropData = await dropRes.json();
 
     if(!pickupData.length || !dropData.length){
-      alert("Location not found in Ranchi");
       return;
     }
 
@@ -249,19 +325,14 @@ async function getDistance(){
 
     if(routeData.routes && routeData.routes.length){
       const km = (routeData.routes[0].distance / 1000).toFixed(1);
-
       document.getElementById("km").value = km;
       calculatePrice();
-    }else{
-      alert("Route not available");
     }
 
   }catch(error){
     console.log(error);
-    alert("Unable to calculate distance");
   }
 }
-</script>
 
 function calculatePrice(){
   let km = parseFloat(document.getElementById("km").value) || 0;
