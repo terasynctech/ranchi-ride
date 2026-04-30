@@ -6,10 +6,12 @@
 <title>RanchiRide - Book Taxi</title>
 
 <style>
-body {font-family: Arial; margin:0;}
+body{
+  font-family:Arial;
+  margin:0;
+}
 
-/* HEADER */
-header {
+header{
   display:flex;
   align-items:center;
   justify-content:center;
@@ -19,16 +21,15 @@ header {
   padding:10px;
 }
 
-header img {
+header img{
   height:45px;
 }
 
-/* HERO */
-.hero {
-  background: url('images/banner.png') no-repeat center;
-  background-size: cover;
-  height: 280px;
-  position: relative;
+.hero{
+  background:url('images/banner.png') no-repeat center;
+  background-size:cover;
+  height:280px;
+  position:relative;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -38,45 +39,31 @@ header img {
   padding:15px;
 }
 
-.hero::before {
+.hero::before{
   content:"";
   position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   background:rgba(0,0,0,0.6);
 }
 
-.hero h1 {
+.hero h1,
+.hero p{
   position:relative;
   z-index:1;
-  font-size:22px;
-  margin:0;
 }
 
-.hero p {
-  position:relative;
-  z-index:1;
-  font-size:14px;
-  margin-top:10px;
-}
-
-/* SECTION */
-.section {
+.section{
   padding:25px 15px;
   text-align:center;
 }
 
-/* FORM */
-form {
+form{
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 
-/* INPUT */
-input, select {
+input,select{
   width:90%;
   max-width:320px;
   padding:10px;
@@ -85,8 +72,7 @@ input, select {
   border-radius:5px;
 }
 
-/* BUTTON */
-.btn {
+.btn{
   background:#ffcc00;
   padding:12px;
   color:#000;
@@ -98,8 +84,13 @@ input, select {
   max-width:320px;
 }
 
-/* SERVICES */
-.card {
+#price{
+  color:#ffcc00;
+  font-size:24px;
+  margin:15px 0;
+}
+
+.card{
   border:1px solid #ddd;
   margin:10px auto;
   padding:15px;
@@ -109,49 +100,28 @@ input, select {
   transition:0.3s;
 }
 
-.card:hover {
+.card:hover{
   background:#ffcc00;
 }
 
-/* FOOTER */
-footer {
+footer{
   background:#000;
   color:#fff;
   padding:20px;
   text-align:center;
 }
 
-/* 📱 MOBILE FIX */
-@media (max-width:600px){
-
-  header {
-    flex-direction:row;
-    text-align:left;
-  }
-
-  header h3 {
-    font-size:18px;
-  }
-
-  .hero {
+@media(max-width:600px){
+  .hero{
     height:220px;
   }
 
-  .hero h1 {
-    font-size:18px;
-  }
-
-  .hero p {
-    font-size:12px;
-  }
-
-  input, select, .btn {
+  input,select,.btn{
     width:95%;
   }
 }
 </style>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -171,14 +141,13 @@ window.saveBooking = async function(data){
 </script>
 
 </head>
-
 <body>
 
 <header>
   <img src="images/logo.png">
   <div>
     <h3 style="margin:0;">RanchiRide</h3>
-    <p style="margin:0; font-size:12px;">Book Taxi Anytime in Ranchi</p>
+    <p style="margin:0;font-size:12px;">Book Taxi Anytime in Ranchi</p>
   </div>
 </header>
 
@@ -192,10 +161,10 @@ window.saveBooking = async function(data){
 
 <form onsubmit="sendToWhatsApp(); return false;">
 
-<input type="text" id="pickup" placeholder="Pickup Location" required>
-<input type="text" id="drop" placeholder="Drop Location" required>
+<input type="text" id="pickup" placeholder="Pickup Location" onblur="getDistance()" required>
+<input type="text" id="drop" placeholder="Drop Location" onblur="getDistance()" required>
 
-<input type="datetime-local" id="datetime" required>
+<input type="datetime-local" id="datetime" onchange="calculatePrice()" required>
 
 <select id="car" onchange="calculatePrice()">
 <option value="12">Swift Dzire (₹12/km)</option>
@@ -203,11 +172,11 @@ window.saveBooking = async function(data){
 <option value="22">Traveller (₹22/km)</option>
 </select>
 
-<input type="number" id="km" placeholder="Distance (KM)" oninput="calculatePrice()" required>
+<input type="text" id="km" placeholder="Distance (KM)" readonly>
 
 <input type="text" id="mobile" placeholder="Your Mobile Number" required>
 
-<select id="package">
+<select id="package" onchange="calculatePrice()">
 <option value="Normal Ride">Normal Ride</option>
 <option value="Airport Transfer">Airport Transfer</option>
 <option value="Local Ride">Local Ride</option>
@@ -238,55 +207,80 @@ window.saveBooking = async function(data){
 <p>© RanchiRide | Powered by TeraSyncTech</p>
 </footer>
 
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
+
 <script>
+let distanceService;
+
+window.onload = function(){
+  distanceService = new google.maps.DistanceMatrixService();
+};
 
 function selectService(service){
   document.getElementById("package").value = service;
   document.querySelector("form").scrollIntoView({behavior:"smooth"});
-
-  if(service === "Airport Transfer") document.getElementById("km").value = 10;
-  if(service === "Local Ride") document.getElementById("km").value = 5;
-  if(service === "Outstation") document.getElementById("km").value = 50;
-  if(service === "Wedding") document.getElementById("km").value = 20;
-
-  calculatePrice();
 }
 
-function calculatePrice() {
-  var km = document.getElementById("km").value;
-  var rate = document.getElementById("car").value;
+function getDistance(){
+  const pickup = document.getElementById("pickup").value;
+  const drop = document.getElementById("drop").value;
 
-  if(km && rate){
-    var total = (km * rate) + 50;
-    document.getElementById("price").innerHTML = "Estimated Price: ₹" + Math.round(total);
-  }
+  if(!pickup || !drop) return;
+
+  distanceService.getDistanceMatrix({
+    origins:[pickup],
+    destinations:[drop],
+    travelMode:'DRIVING',
+    unitSystem:google.maps.UnitSystem.METRIC
+  }, function(response,status){
+
+    if(status === "OK"){
+      const distanceValue = response.rows[0].elements[0].distance.value;
+      const km = (distanceValue / 1000).toFixed(1);
+
+      document.getElementById("km").value = km;
+      calculatePrice();
+    }
+  });
 }
 
-function sendToWhatsApp() {
+function calculatePrice(){
+  let km = parseFloat(document.getElementById("km").value) || 0;
+  let rate = parseFloat(document.getElementById("car").value) || 0;
+  let total = (km * rate) + 50;
 
-  var pickup = document.getElementById("pickup").value;
-  var drop = document.getElementById("drop").value;
-  var datetime = document.getElementById("datetime").value;
-  var car = document.getElementById("car").options[document.getElementById("car").selectedIndex].text;
-  var km = document.getElementById("km").value;
-  var mobile = document.getElementById("mobile").value;
-  var packageType = document.getElementById("package").value;
-  var price = document.getElementById("price").innerText;
-
-  saveBooking({pickup, drop, datetime, car, km, mobile, packageType, price});
-
-  var message = "🚖 RanchiRide Booking %0A"
-    + "Pickup: " + pickup + "%0A"
-    + "Drop: " + drop + "%0A"
-    + "Date: " + datetime + "%0A"
-    + "Car: " + car + "%0A"
-    + "KM: " + km + "%0A"
-    + "Price: " + price + "%0A"
-    + "Mobile: " + mobile;
-
-  window.open("https://wa.me/917633801161?text=" + message, '_blank');
+  document.getElementById("price").innerHTML =
+    "Estimated Price: ₹" + Math.round(total);
 }
 
+function sendToWhatsApp(){
+  const pickup = document.getElementById("pickup").value;
+  const drop = document.getElementById("drop").value;
+  const datetime = document.getElementById("datetime").value;
+  const car = document.getElementById("car").options[document.getElementById("car").selectedIndex].text;
+  const km = document.getElementById("km").value;
+  const mobile = document.getElementById("mobile").value;
+  const packageType = document.getElementById("package").value;
+  const price = document.getElementById("price").innerText;
+
+  saveBooking({pickup,drop,datetime,car,km,mobile,packageType,price});
+
+  const message =
+    "🚖 RanchiRide Booking\n" +
+    "Pickup: " + pickup + "\n" +
+    "Drop: " + drop + "\n" +
+    "Date: " + datetime + "\n" +
+    "Car: " + car + "\n" +
+    "Distance: " + km + " KM\n" +
+    "Package: " + packageType + "\n" +
+    "Price: " + price + "\n" +
+    "Mobile: " + mobile;
+
+  window.open(
+    "https://wa.me/917633801161?text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
 </script>
 
 </body>
