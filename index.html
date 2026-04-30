@@ -269,28 +269,62 @@ async function showSuggestions(field){
 }
 
 function useCurrentLocation(){
+  const pickupField = document.getElementById("pickup");
+
   if(!navigator.geolocation){
     alert("Geolocation not supported");
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(async function(position){
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
+  pickupField.value = "Fetching your location...";
 
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+  navigator.geolocation.getCurrentPosition(
+    async function(position){
+      try{
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
 
-    const res = await fetch(url);
-    const data = await res.json();
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
 
-    if(data.display_name){
-      document.getElementById("pickup").value = data.display_name;
-      getDistance();
+        const res = await fetch(url, {
+          headers:{
+            "Accept":"application/json"
+          }
+        });
+
+        const data = await res.json();
+
+        if(data && data.display_name){
+          pickupField.value = data.display_name;
+          getDistance();
+        }else{
+          pickupField.value = "";
+          alert("Unable to detect address");
+        }
+
+      }catch(error){
+        pickupField.value = "";
+        alert("Location fetch failed");
+        console.log(error);
+      }
+    },
+
+    function(error){
+      pickupField.value = "";
+
+      if(error.code === 1){
+        alert("Please allow location access in browser");
+      }else{
+        alert("Unable to get your location");
+      }
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:0
     }
-
-  }, function(){
-    alert("Unable to get your location");
-  });
+  );
 }
 
 async function getDistance(){
