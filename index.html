@@ -164,7 +164,7 @@ window.saveBooking = async function(data){
 <input type="text" id="pickup" placeholder="Pickup Location" onblur="getDistance()" required>
 <input type="text" id="drop" placeholder="Drop Location" onblur="getDistance()" required>
 
-<input type="datetime-local" id="datetime" onchange="calculatePrice()" required>
+<input type="datetime-local" id="datetime" required>
 
 <select id="car" onchange="calculatePrice()">
 <option value="12">Swift Dzire (₹12/km)</option>
@@ -176,7 +176,7 @@ window.saveBooking = async function(data){
 
 <input type="text" id="mobile" placeholder="Your Mobile Number" required>
 
-<select id="package" onchange="calculatePrice()">
+<select id="package">
 <option value="Normal Ride">Normal Ride</option>
 <option value="Airport Transfer">Airport Transfer</option>
 <option value="Local Ride">Local Ride</option>
@@ -207,41 +207,55 @@ window.saveBooking = async function(data){
 <p>© RanchiRide | Powered by TeraSyncTech</p>
 </footer>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
-
 <script>
-let distanceService;
-
-window.onload = function(){
-  distanceService = new google.maps.DistanceMatrixService();
-};
-
 function selectService(service){
   document.getElementById("package").value = service;
   document.querySelector("form").scrollIntoView({behavior:"smooth"});
 }
 
-function getDistance(){
+async function getDistance(){
   const pickup = document.getElementById("pickup").value;
   const drop = document.getElementById("drop").value;
 
   if(!pickup || !drop) return;
 
-  distanceService.getDistanceMatrix({
-    origins:[pickup],
-    destinations:[drop],
-    travelMode:'DRIVING',
-    unitSystem:google.maps.UnitSystem.METRIC
-  }, function(response,status){
+  try{
+    const pickupUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(pickup)}`;
+    const dropUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(drop)}`;
 
-    if(status === "OK"){
-      const distanceValue = response.rows[0].elements[0].distance.value;
-      const km = (distanceValue / 1000).toFixed(1);
+    const pickupRes = await fetch(pickupUrl);
+    const dropRes = await fetch(dropUrl);
 
+    const pickupData = await pickupRes.json();
+    const dropData = await dropRes.json();
+
+    if(!pickupData.length || !dropData.length){
+      alert("Location not found");
+      return;
+    }
+
+    const pLat = pickupData[0].lat;
+    const pLon = pickupData[0].lon;
+    const dLat = dropData[0].lat;
+    const dLon = dropData[0].lon;
+
+    const routeUrl = `https://router.project-osrm.org/route/v1/driving/${pLon},${pLat};${dLon},${dLat}?overview=false`;
+
+    const routeRes = await fetch(routeUrl);
+    const routeData = await routeRes.json();
+
+    if(routeData.routes && routeData.routes.length > 0){
+      const km = (routeData.routes[0].distance / 1000).toFixed(1);
       document.getElementById("km").value = km;
       calculatePrice();
+    }else{
+      alert("Unable to calculate distance");
     }
-  });
+
+  }catch(error){
+    console.log(error);
+    alert("Distance service unavailable");
+  }
 }
 
 function calculatePrice(){
