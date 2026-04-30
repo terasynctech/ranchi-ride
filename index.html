@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RanchiRide - Book Taxi</title>
 
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
 body{font-family:Arial;margin:0;}
 
@@ -20,16 +23,12 @@ header img{height:45px;}
   display:flex;flex-direction:column;justify-content:center;align-items:center;
   color:white;text-align:center;
 }
-.hero::before{
-  content:"";position:absolute;inset:0;background:rgba(0,0,0,0.6);
-}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.6);}
 .hero h1,.hero p{position:relative;z-index:1;}
 
 .section{padding:25px 15px;text-align:center;}
 
-form{
-  display:flex;flex-direction:column;align-items:center;position:relative;
-}
+form{display:flex;flex-direction:column;align-items:center;}
 
 input,select{
   width:90%;max-width:320px;padding:10px;margin:8px;
@@ -49,44 +48,37 @@ input,select{
 }
 .card:hover{background:#ffcc00;}
 
-footer{
-  background:#000;color:#fff;padding:20px;text-align:center;
-}
+footer{background:#000;color:#fff;padding:20px;text-align:center;}
 
-/* Suggestions */
 .suggestions{
   width:90%;max-width:320px;background:#fff;border:1px solid #ddd;
-  border-top:none;text-align:left;z-index:99;
 }
 .suggestions div{padding:8px;cursor:pointer;}
 .suggestions div:hover{background:#f3f3f3;}
 
-@media(max-width:600px){
-  .hero{height:220px;}
-  input,select,.btn{width:95%;}
-  .suggestions{width:95%;}
+/* MAP MODAL */
+#mapModal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:#000000cc;
+  display:none;
+  z-index:999;
 }
+#map{
+  height:80%;
+  width:100%;
+}
+.map-box{
+  background:#fff;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:10px;
+  text-align:center;
+}
+
 </style>
-
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.saveBooking = async function(data){
-  await addDoc(collection(db, "bookings"), data);
-}
-</script>
-
 </head>
 
 <body>
@@ -94,8 +86,8 @@ window.saveBooking = async function(data){
 <header>
   <img src="images/logo.png">
   <div>
-    <h3 style="margin:0;">RanchiRide</h3>
-    <p style="margin:0;font-size:12px;">Book Taxi Anytime in Ranchi</p>
+    <h3>RanchiRide</h3>
+    <p>Book Taxi Anytime in Ranchi</p>
   </div>
 </header>
 
@@ -109,15 +101,16 @@ window.saveBooking = async function(data){
 
 <form onsubmit="sendToWhatsApp(); return false;">
 
-<!-- PICKUP -->
-<input type="text" id="pickup" placeholder="Pickup (e.g. Birsa Airport Ranchi)" oninput="showSuggestions('pickup')" required>
+<input type="text" id="pickup" placeholder="Pickup" oninput="showSuggestions('pickup')" required>
 <div id="pickup-list" class="suggestions"></div>
 
 <button type="button" class="btn" onclick="useCurrentLocation()">📍 Use My Location</button>
+<button type="button" class="btn" onclick="openMap('pickup')">🗺 Pick from Map</button>
 
-<!-- DROP -->
 <input type="text" id="drop" placeholder="Drop Location" oninput="showSuggestions('drop')" required>
 <div id="drop-list" class="suggestions"></div>
+
+<button type="button" class="btn" onclick="openMap('drop')">🗺 Pick Drop from Map</button>
 
 <input type="datetime-local" id="datetime" required>
 
@@ -131,14 +124,6 @@ window.saveBooking = async function(data){
 
 <input type="text" id="mobile" placeholder="Your Mobile Number" required>
 
-<select id="package">
-<option value="Normal Ride">Normal Ride</option>
-<option value="Airport Transfer">Airport Transfer</option>
-<option value="Local Ride">Local Ride</option>
-<option value="Outstation">Outstation</option>
-<option value="Wedding">Wedding</option>
-</select>
-
 <h3 id="price">Estimated Price: ₹0</h3>
 
 <button class="btn">Book via WhatsApp</button>
@@ -146,93 +131,101 @@ window.saveBooking = async function(data){
 </form>
 </section>
 
-<section class="section">
-<h2>Our Services</h2>
-<div class="card" onclick="selectService('Airport Transfer')">✈️ Airport Transfer</div>
-<div class="card" onclick="selectService('Local Ride')">🏙️ Local Ride</div>
-<div class="card" onclick="selectService('Outstation')">🚗 Outstation</div>
-<div class="card" onclick="selectService('Wedding')">💍 Wedding</div>
-</section>
-
 <footer>
-<p>📍 Sainik Market, Main Road, Ranchi</p>
-<p>📞 WhatsApp: +91 76338 01161</p>
-<p>© RanchiRide | Powered by TeraSyncTech</p>
+<p>📍 Ranchi</p>
+<p>📞 +91 76338 01161</p>
 </footer>
+
+<!-- MAP MODAL -->
+<div id="mapModal">
+  <div id="map"></div>
+  <div class="map-box">
+    <button class="btn" onclick="confirmLocation()">Confirm Location</button>
+    <button class="btn" onclick="closeMap()">Close</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
-// SERVICE
-function selectService(service){
-  document.getElementById("package").value = service;
-  document.querySelector("form").scrollIntoView({behavior:"smooth"});
+let selectedField = "";
+let map, marker;
+
+// OPEN MAP
+function openMap(field){
+  selectedField = field;
+  document.getElementById("mapModal").style.display = "block";
+
+  setTimeout(()=>{
+    map = L.map('map').setView([23.3441,85.3096], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    map.on('click', function(e){
+      if(marker) map.removeLayer(marker);
+      marker = L.marker(e.latlng).addTo(map);
+    });
+
+  }, 300);
+}
+
+function closeMap(){
+  document.getElementById("mapModal").style.display = "none";
+  if(map){ map.remove(); }
+}
+
+// CONFIRM MAP LOCATION
+async function confirmLocation(){
+  if(!marker) return alert("Select a point");
+
+  const lat = marker.getLatLng().lat;
+  const lon = marker.getLatLng().lng;
+
+  const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+  const data = await res.json();
+
+  document.getElementById(selectedField).value = data.display_name;
+
+  closeMap();
+  getDistance();
 }
 
 // SUGGESTIONS
 async function showSuggestions(field){
-  const input = document.getElementById(field).value.trim();
-  const list = document.getElementById(field + "-list");
+  const input = document.getElementById(field).value;
+  if(input.length < 3) return;
 
-  if(input.length < 3){ list.innerHTML=""; return; }
-
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(input + ", Ranchi")}`;
-  const res = await fetch(url);
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${input}`);
   const data = await res.json();
 
+  const list = document.getElementById(field+"-list");
   list.innerHTML = "";
 
   data.forEach(place=>{
-    const div = document.createElement("div");
+    let div = document.createElement("div");
     div.innerText = place.display_name;
     div.onclick = ()=>{
       document.getElementById(field).value = place.display_name;
-      list.innerHTML = "";
+      list.innerHTML="";
       getDistance();
     };
     list.appendChild(div);
   });
 }
 
-// CURRENT LOCATION (FIXED)
+// CURRENT LOCATION
 function useCurrentLocation(){
-  const pickupField = document.getElementById("pickup");
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
 
-  if(!navigator.geolocation){
-    alert("Geolocation not supported");
-    return;
-  }
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+    const data = await res.json();
 
-  pickupField.value = "📍 Detecting location...";
-
-  navigator.geolocation.getCurrentPosition(
-    async function(position){
-      try{
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if(data.display_name){
-          pickupField.value = data.display_name;
-          getDistance();
-        }else{
-          pickupField.value="";
-          alert("Unable to detect address");
-        }
-
-      }catch{
-        pickupField.value="";
-        alert("Location error");
-      }
-    },
-    function(){
-      pickupField.value="";
-      alert("Allow location permission");
-    },
-    {enableHighAccuracy:true}
-  );
+    document.getElementById("pickup").value = data.display_name;
+    getDistance();
+  });
 }
 
 // DISTANCE
@@ -242,69 +235,44 @@ async function getDistance(){
 
   if(!pickup || !drop) return;
 
-  document.getElementById("price").innerHTML = "Calculating...";
+  const p = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${pickup}`);
+  const d = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${drop}`);
 
-  try{
-    const pRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(pickup + ", Ranchi")}`);
-    const dRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(drop + ", Ranchi")}`);
+  const pData = await p.json();
+  const dData = await d.json();
 
-    const pData = await pRes.json();
-    const dData = await dRes.json();
+  const pLat = pData[0].lat, pLon = pData[0].lon;
+  const dLat = dData[0].lat, dLon = dData[0].lon;
 
-    if(!pData.length || !dData.length){
-      alert("Enter proper location");
-      return;
-    }
+  const route = await fetch(`https://router.project-osrm.org/route/v1/driving/${pLon},${pLat};${dLon},${dLat}?overview=false`);
+  const rData = await route.json();
 
-    const pLat = pData[0].lat, pLon = pData[0].lon;
-    const dLat = dData[0].lat, dLon = dData[0].lon;
+  const km = rData.routes[0].distance / 1000;
 
-    const routeRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${pLon},${pLat};${dLon},${dLat}?overview=false`);
-    const routeData = await routeRes.json();
-
-    let km = routeData.routes[0].distance / 1000;
-
-    if(km > 200){
-      alert("Distance error. Try full address.");
-      return;
-    }
-
-    document.getElementById("km").value = km.toFixed(1);
-    calculatePrice();
-
-  }catch{
-    alert("Distance error");
-  }
+  document.getElementById("km").value = km.toFixed(1);
+  calculatePrice();
 }
 
 // PRICE
 function calculatePrice(){
-  let km = parseFloat(document.getElementById("km").value) || 0;
-  let rate = parseFloat(document.getElementById("car").value) || 0;
+  let km = parseFloat(document.getElementById("km").value)||0;
+  let rate = parseFloat(document.getElementById("car").value)||0;
 
-  let total = 50 + (km * rate);
+  let total = 50 + (km*rate);
 
-  document.getElementById("price").innerHTML =
-    "Estimated Price: ₹" + Math.round(total);
+  document.getElementById("price").innerText = "Estimated Price: ₹"+Math.round(total);
 }
 
 // WHATSAPP
 function sendToWhatsApp(){
   const pickup = document.getElementById("pickup").value;
   const drop = document.getElementById("drop").value;
-  const datetime = document.getElementById("datetime").value;
-  const car = document.getElementById("car").selectedOptions[0].text;
   const km = document.getElementById("km").value;
-  const mobile = document.getElementById("mobile").value;
-  const packageType = document.getElementById("package").value;
   const price = document.getElementById("price").innerText;
 
-  saveBooking({pickup,drop,datetime,car,km,mobile,packageType,price});
+  const msg = `🚖 RanchiRide Booking\nPickup: ${pickup}\nDrop: ${drop}\nDistance: ${km} KM\n${price}`;
 
-  const msg =
-    `🚖 RanchiRide Booking\nPickup: ${pickup}\nDrop: ${drop}\nDate: ${datetime}\nCar: ${car}\nDistance: ${km} KM\nPackage: ${packageType}\nPrice: ${price}\nMobile: ${mobile}`;
-
-  window.open("https://wa.me/917633801161?text=" + encodeURIComponent(msg));
+  window.open("https://wa.me/917633801161?text="+encodeURIComponent(msg));
 }
 
 </script>
