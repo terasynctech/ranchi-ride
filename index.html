@@ -16,6 +16,19 @@ header{height:78px;display:flex;align-items:center;background:#fff;position:stic
 .map-grid{display:grid;grid-template-columns:.8fr 1.35fr .9fr;gap:18px;align-items:stretch}.info-card,.fare-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:22px;box-shadow:0 7px 25px #0b234008}.info-card h3,.fare-card h3{font:800 16px Manrope;margin-bottom:8px}.info-card>p,.fare-card>p{font-size:12px;line-height:1.65;color:var(--muted)}.benefit{display:flex;gap:11px;margin-top:19px;align-items:center;font-size:12px;font-weight:700}.benefit-icon{width:34px;height:34px;border-radius:11px;background:#fff4bd;display:grid;place-items:center;font-size:16px;flex-shrink:0}#map{height:345px;border-radius:17px;border:1px solid var(--line);z-index:1}.fare-fields{display:grid;gap:11px;margin-top:15px}.fare-fields label{font-size:11px;font-weight:800;color:#52627a}.fare-fields input,.fare-fields select{width:100%;padding:12px;border:1px solid #dce4ee;border-radius:9px;outline:none;margin-top:6px;font-size:12px}.fare-result{background:#fff9d9;border:1px solid #f3df77;border-radius:12px;padding:13px;margin-top:13px;display:none}.fare-result strong{font:800 24px Manrope}.fare-result small{display:block;color:#68758a;margin-top:5px;font-size:11px}.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.how-card{padding:25px;border:1px solid var(--line);border-radius:16px}.step{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:var(--yellow);font:800 16px Manrope;margin-bottom:22px}.how-card h3{font:800 17px Manrope;margin-bottom:8px}.how-card p{color:var(--muted);font-size:13px;line-height:1.7;margin:0}.cta-band{background:var(--navy);color:#fff;border-radius:22px;padding:38px 42px;display:flex;justify-content:space-between;align-items:center;gap:25px;position:relative;overflow:hidden}.cta-band:after{content:"";position:absolute;right:-60px;top:-140px;width:340px;height:340px;border:1px solid #ffffff20;border-radius:50%;box-shadow:0 0 0 40px #ffffff08,0 0 0 80px #ffffff05}.cta-band h2{font:800 29px Manrope;letter-spacing:-.8px;margin-bottom:9px;position:relative;z-index:1}.cta-band p{font-size:13px;color:#c7d4e4;margin:0;position:relative;z-index:1}.cta-band .btn{position:relative;z-index:1;white-space:nowrap}.trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:35px 0 0}.trust-item{display:flex;gap:12px;align-items:center}.trust-icon{width:43px;height:43px;border-radius:14px;background:#fff3b8;display:grid;place-items:center;font-size:19px}.trust-item strong{font:800 12px Manrope;display:block}.trust-item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
 footer{background:#061426;color:#fff;padding:42px 0 20px}.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:35px;padding-bottom:32px}.footer-brand p{color:#aebed1;font-size:12px;line-height:1.7;max-width:280px;margin-top:15px}.footer-col h4{font:800 12px Manrope;margin:3px 0 17px}.footer-col a,.footer-col span{display:block;color:#afbed0;font-size:12px;margin:12px 0}.footer-col a:hover{color:var(--yellow)}.footer-bottom{border-top:1px solid #ffffff18;padding-top:18px;display:flex;justify-content:space-between;gap:20px;color:#8ea0b6;font-size:10px}.footer-bottom b{color:#fff}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 18px;border-radius:12px;box-shadow:var(--shadow);z-index:2000;display:none;max-width:90%;font-size:13px}.leaflet-container{font-family:'DM Sans',sans-serif}
+
+.loc-btn{border:0;background:#f1f5f9;color:#17365a;border-radius:9px;width:34px;height:34px;flex:0 0 34px;font-size:21px;display:grid;place-items:center;padding:0}
+.loc-btn:hover{background:#fff0a6;color:#071a31}.input-wrap input{min-width:0}
+.location-modal{position:fixed;inset:0;background:#061426b8;z-index:3000;display:none;align-items:center;justify-content:center;padding:18px}
+.location-dialog{width:min(760px,100%);background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 25px 90px #0005}
+.location-dialog-head{display:flex;align-items:center;justify-content:space-between;padding:16px 19px;border-bottom:1px solid #e4eaf1;gap:12px}
+.location-dialog-head strong{font:800 17px Manrope}.location-dialog-head button{border:0;background:#f1f5f9;border-radius:9px;width:34px;height:34px;font-size:20px}
+.location-search{display:flex;gap:8px;padding:12px 16px}.location-search input{min-width:0;flex:1;border:1px solid #dce4ee;border-radius:10px;padding:12px;outline:none}
+.location-search button{border:0;border-radius:10px;background:var(--yellow);padding:0 15px;font-weight:800}
+#pickerMap{height:390px;width:100%;background:#eef3f8}.location-dialog-foot{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted)}
+.location-dialog-foot .btn{white-space:nowrap}.loc-hint{font-size:11px;color:#65758b;padding:0 17px 13px}
+@media(max-width:700px){.location-modal{padding:8px}.location-dialog{border-radius:14px}.location-search{flex-wrap:wrap}.location-search input{flex-basis:100%}#pickerMap{height:55vh;min-height:300px}.location-dialog-foot{align-items:flex-start;flex-direction:column}.input-wrap{gap:5px}.loc-btn{width:30px;height:30px;flex-basis:30px}}
+
 @media(max-width:1000px){.navlinks{gap:14px}.hero-inner{gap:20px}.services{grid-template-columns:repeat(3,1fr)}.map-grid{grid-template-columns:1fr 1fr}.map-box{grid-column:1/-1;grid-row:1}.map-grid .info-card{grid-column:1}.map-grid .fare-card{grid-column:2}.fields{grid-template-columns:1fr 1fr}.fields .btn{width:100%}.footer-grid{grid-template-columns:1.3fr 1fr 1fr}.footer-col:last-child{display:none}}
 @media(max-width:700px){header{height:68px}.brand{font-size:18px}.brand-mark{width:37px;height:37px}.menu-toggle{display:block}.navlinks{display:none;position:absolute;top:67px;left:0;right:0;background:#fff;padding:18px 5%;box-shadow:0 12px 20px #102b4c14;flex-direction:column;align-items:flex-start}.navlinks.open{display:flex}.nav-actions .btn-outline{display:none}.nav-actions .btn{padding:10px 12px}.hero{min-height:unset}.hero-inner{grid-template-columns:1fr;padding:53px 0 75px}.hero-copy>p{font-size:15px}.hero-visual{min-height:235px;margin-top:-20px}.car-art{max-width:420px}.hero-glass{bottom:0;right:0;padding:12px;min-width:170px}.booking-wrap{margin-top:-35px}.booking-panel{padding:17px;border-radius:16px}.booking-head{align-items:flex-start}.booking-head h2{font-size:17px}.secure-note{font-size:10px}.fields{grid-template-columns:1fr}.fields .btn{width:100%}.section{padding:58px 0}.section-top{align-items:flex-start;flex-direction:column;gap:12px}.services{grid-template-columns:repeat(2,1fr);gap:10px}.service-card{padding:13px}.service-icon{height:68px;font-size:36px}.map-grid{grid-template-columns:1fr}.map-grid .info-card,.map-grid .fare-card,.map-box{grid-column:auto;grid-row:auto}#map{height:300px}.how-grid{grid-template-columns:1fr;gap:12px}.how-card{padding:20px}.cta-band{padding:28px 22px;align-items:flex-start;flex-direction:column}.cta-band h2{font-size:25px}.trust-row{grid-template-columns:1fr 1fr;gap:22px}.footer-grid{grid-template-columns:1fr 1fr;gap:24px}.footer-brand{grid-column:1/-1}.footer-col:last-child{display:block}.footer-bottom{flex-direction:column;gap:8px}}
 </style>
@@ -36,8 +49,8 @@ footer{background:#061426;color:#fff;padding:42px 0 20px}.footer-grid{display:gr
 <section id="book" class="booking-wrap wrap"><div class="booking-panel"><div class="booking-head"><h2>Where would you like to go?</h2><span class="secure-note">● Simple · Convenient · Local</span></div>
 <div class="service-tabs" id="serviceTabs"><button class="service-tab active" data-type="Economy Car">🚘 Economy</button><button class="service-tab" data-type="Comfort Car">🚙 Comfort</button><button class="service-tab" data-type="Bike">🏍️ Bike</button><button class="service-tab" data-type="Auto">🛺 Auto</button><button class="service-tab" data-type="Rental">🗓️ Rental</button></div>
 <form id="bookingForm"><div class="fields">
-<div class="field"><label for="pickup">PICKUP LOCATION</label><div class="input-wrap"><span class="pin">🟢</span><input id="pickup" placeholder="e.g. Ranchi Railway Station" required></div></div>
-<div class="field"><label for="drop">DROP LOCATION</label><div class="input-wrap"><span class="pin">🔴</span><input id="drop" placeholder="Where to?" required></div></div>
+<div class="field"><label for="pickup">PICKUP LOCATION</label><div class="input-wrap"><span class="pin">🟢</span><input id="pickup" placeholder="Search place or use live location" required><button class="loc-btn" type="button" title="Use my live location" onclick="useLiveLocation('pickup')">◎</button><button class="loc-btn map-pick" type="button" title="Pick pickup on map" onclick="openLocationPicker('pickup')">⌖</button></div></div>
+<div class="field"><label for="drop">DROP LOCATION</label><div class="input-wrap"><span class="pin">🔴</span><input id="drop" placeholder="Search destination or pick on map" required><button class="loc-btn map-pick" type="button" title="Pick destination on map" onclick="openLocationPicker('drop')">⌖</button></div></div>
 <div class="field"><label for="rideDate">WHEN</label><div class="input-wrap"><span class="pin">◷</span><input id="rideDate" type="datetime-local" required></div></div>
 <button class="btn btn-yellow" type="submit">Get fare & book →</button>
 </div><p class="booking-note">Fare shown is an estimate based on route distance and selected service. Final pricing may vary by waiting time, tolls or operator confirmation.</p></form>
@@ -60,6 +73,17 @@ footer{background:#061426;color:#fff;padding:42px 0 20px}.footer-grid{display:gr
 <section class="section soft" id="about"><div class="wrap"><div class="cta-band"><div><h2>Ranchi is yours to explore.</h2><p>Make your next local trip simpler with Ranchi Ride.</p></div><a class="btn btn-yellow" href="#book">Plan a ride now →</a></div><div class="trust-row"><div class="trust-item"><div class="trust-icon">🛡️</div><div><strong>Safety-minded</strong><small>Clear trip details</small></div></div><div class="trust-item"><div class="trust-icon">₹</div><div><strong>Fare clarity</strong><small>Estimate before booking</small></div></div><div class="trust-item"><div class="trust-icon">⏱️</div><div><strong>Convenient</strong><small>Simple booking flow</small></div></div><div class="trust-item"><div class="trust-icon">🤝</div><div><strong>Local support</strong><small>Ranchi-focused service</small></div></div></div></div></section>
 </main>
 <footer id="contact"><div class="wrap"><div class="footer-grid"><div class="footer-brand"><a class="brand" href="#"><div class="brand-mark">⌖</div><span>Ranchi <em>Ride</em><small>RIDE · TRAVEL · EXPLORE</small></span></a><p>A fresh way to plan local travel around Ranchi. Choose your service, estimate your route and request a ride.</p></div><div class="footer-col"><h4>Explore</h4><a href="#services">Ride services</a><a href="#fares">Fare estimator</a><a href="#how">How it works</a></div><div class="footer-col"><h4>Ride services</h4><a href="#book" data-footer-service="Economy Car">Cars & cabs</a><a href="#book" data-footer-service="Bike">Bike rides</a><a href="#book" data-footer-service="Auto">Auto rides</a><a href="#book" data-footer-service="Rental">Rentals</a></div><div class="footer-col"><h4>Contact & tools</h4><span>📍 Ranchi, Jharkhand</span><a href="https://wa.me/917633801161" target="_blank" rel="noopener">WhatsApp booking support</a><a href="admin.html">Admin dashboard</a><a href="driver.html">Driver portal</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> <b>Ranchi Ride</b>. All rights reserved.</span><span>Designed for Ranchi · Powered by TeraSyncTech</span></div></div></footer>
+
+<div class="location-modal" id="locationModal" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+ <div class="location-dialog">
+  <div class="location-dialog-head"><strong id="pickerTitle">Choose pickup location</strong><button type="button" onclick="closeLocationPicker()" aria-label="Close">×</button></div>
+  <div class="location-search"><input id="locationSearch" placeholder="Search landmark, road or area in Ranchi"><button type="button" onclick="searchPickerLocation()">Search</button><button type="button" onclick="useLiveLocation(pickerTarget)">◎ Use my location</button></div>
+  <div id="pickerMap"></div>
+  <div class="loc-hint">Move the map and tap any point to choose the exact location. Browser location permission is needed for live GPS.</div>
+  <div class="location-dialog-foot"><span id="pickedAddress">Tap the map or search for a place.</span><button type="button" class="btn btn-yellow" onclick="confirmPickedLocation()">Use this location →</button></div>
+ </div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -75,10 +99,68 @@ document.querySelectorAll('[data-select]').forEach(c=>c.addEventListener('click'
 document.querySelectorAll('[data-footer-service]').forEach(a=>a.addEventListener('click',()=>selectService(a.dataset.footerService)));
 function selectService(type){selectedType=type;document.querySelectorAll('.service-tab').forEach(b=>b.classList.toggle('active',b.dataset.type===type));$('fareType').value=type==='Comfort Car'||type==='XL Car'||type==='Bike'||type==='Auto'||type==='Rental'?type:'Economy Car';}
 function initMap(){if(!window.L)return;map=L.map('map',{scrollWheelZoom:false}).setView([23.3441,85.3096],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);L.circleMarker([23.3441,85.3096],{radius:8,color:'#fff',weight:3,fillColor:'#f5c400',fillOpacity:1}).addTo(map).bindPopup('Ranchi, Jharkhand');}
+
+let pickerMap=null,pickerMarker=null,pickerTarget='pickup',pickedPoint=null,pickerLayer=null;
+function openLocationPicker(target){
+ pickerTarget=target;
+ $('pickerTitle').textContent=target==='pickup'?'Choose pickup location':'Choose destination';
+ $('locationModal').style.display='flex';
+ if(!pickerMap){
+   pickerMap=L.map('pickerMap').setView([23.3441,85.3096],13);
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(pickerMap);
+   pickerMap.on('click',async e=>{await setPickedPoint(e.latlng.lat,e.latlng.lng,true);});
+ } 
+ setTimeout(()=>pickerMap.invalidateSize(),150);
+ const existing=$(target).value.trim();
+ if(existing){$('locationSearch').value=existing;searchPickerLocation().catch(()=>{});}
+ else if(navigator.geolocation){navigator.geolocation.getCurrentPosition(async pos=>{if($('locationModal').style.display==='flex'){pickerMap.setView([pos.coords.latitude,pos.coords.longitude],16);await setPickedPoint(pos.coords.latitude,pos.coords.longitude,true);}},()=>{}, {enableHighAccuracy:true,timeout:8000});}
+}
+function closeLocationPicker(){$('locationModal').style.display='none'}
+async function setPickedPoint(lat,lon,reverse){
+ pickedPoint={lat,lon};
+ if(pickerMarker)pickerMap.removeLayer(pickerMarker);
+ pickerMarker=L.marker([lat,lon],{draggable:true}).addTo(pickerMap);
+ pickerMarker.on('dragend',async e=>{const p=e.target.getLatLng();await setPickedPoint(p.lat,p.lng,true)});
+ pickerMap.setView([lat,lon],Math.max(pickerMap.getZoom(),15));
+ $('pickedAddress').textContent=`Selected point: ${lat.toFixed(5)}, ${lon.toFixed(5)} · finding address…`;
+ if(reverse){try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,{headers:{'Accept-Language':'en'}});const d=await r.json();pickedPoint.address=d.display_name||`${lat.toFixed(5)}, ${lon.toFixed(5)}`;}catch(e){pickedPoint.address=`${lat.toFixed(5)}, ${lon.toFixed(5)}`;}}
+ $('pickedAddress').textContent=pickedPoint.address||`${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+}
+async function searchPickerLocation(){
+ const q=$('locationSearch').value.trim();if(!q){toast('Enter a place or landmark to search.');return;}
+ const btn=document.querySelector('.location-search button');const old=btn.textContent;btn.textContent='Searching…';btn.disabled=true;
+ try{const p=await geocode(q);await setPickedPoint(p.lat,p.lon,true);pickerMap.setView([p.lat,p.lon],16);}
+ catch(e){toast('Location not found. Try a nearby landmark or road name.');}
+ finally{btn.textContent=old;btn.disabled=false;}
+}
+function confirmPickedLocation(){
+ if(!pickedPoint){toast('Choose a point on the map first.');return;}
+ $(pickerTarget).value=pickedPoint.address||`${pickedPoint.lat.toFixed(5)}, ${pickedPoint.lon.toFixed(5)}`;
+ $(pickerTarget).dataset.lat=pickedPoint.lat;$(pickerTarget).dataset.lon=pickedPoint.lon;
+ closeLocationPicker();toast((pickerTarget==='pickup'?'Pickup':'Destination')+' location selected.');
+}
+function useLiveLocation(target){
+ pickerTarget=target||'pickup';
+ if(!navigator.geolocation){toast('Live location is not supported by this browser.');return;}
+ const btn=event&&event.currentTarget;const old=btn?btn.textContent:'';
+ if(btn){btn.disabled=true;btn.textContent='…';}
+ navigator.geolocation.getCurrentPosition(async pos=>{
+   const lat=pos.coords.latitude,lon=pos.coords.longitude;
+   try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,{headers:{'Accept-Language':'en'}});const d=await r.json();$(pickerTarget).value=d.display_name||`${lat.toFixed(5)}, ${lon.toFixed(5)}`;}
+   catch(e){$(pickerTarget).value=`${lat.toFixed(5)}, ${lon.toFixed(5)}`;}
+   $(pickerTarget).dataset.lat=lat;$(pickerTarget).dataset.lon=lon;
+   if($('locationModal').style.display==='flex'){if(!pickerMap){openLocationPicker(pickerTarget);}await setPickedPoint(lat,lon,true);pickerMap.setView([lat,lon],17);}
+   if(btn){btn.disabled=false;btn.textContent=old;}
+   toast('Live location added. You can adjust it on the map.');
+ },err=>{if(btn){btn.disabled=false;btn.textContent=old;}toast(err.code===1?'Please allow location access in your browser, then try again.':'Could not get GPS location. Try selecting a point on the map.');},{enableHighAccuracy:true,timeout:12000,maximumAge:15000});
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLocationPicker()});
+
 initMap();
-async function geocode(place){const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q='+encodeURIComponent(place+', Ranchi, Jharkhand');const r=await fetch(url,{headers:{'Accept-Language':'en'}});if(!r.ok)throw Error('Could not look up this place');const d=await r.json();if(!d.length)throw Error('Place not found. Try a nearby landmark or full address.');return {lat:+d[0].lat,lon:+d[0].lon,label:d[0].display_name};}
+async function geocode(place){const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q='+encodeURIComponent(place);const r=await fetch(url,{headers:{'Accept-Language':'en'}});if(!r.ok)throw Error('Could not look up this place');const d=await r.json();if(!d.length)throw Error('Place not found. Try a nearby landmark or full address.');return {lat:+d[0].lat,lon:+d[0].lon,label:d[0].display_name};}
 async function routeDistance(a,b){const url=`https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=full&geometries=geojson`;const r=await fetch(url);if(!r.ok)throw Error('Route service unavailable');const d=await r.json();if(!d.routes||!d.routes.length)throw Error('No driving route found between these places');return {km:d.routes[0].distance/1000,coords:d.routes[0].geometry.coordinates.map(p=>[p[1],p[0]]),minutes:Math.round(d.routes[0].duration/60)};}
-async function calculate(pick,drop,type){if(!pick.trim()||!drop.trim())throw Error('Enter both pickup and destination.');const [a,b]=await Promise.all([geocode(pick),geocode(drop)]);const route=await routeDistance(a,b);if(routeLayer)map.removeLayer(routeLayer);if(pickupMarker)map.removeLayer(pickupMarker);if(dropMarker)map.removeLayer(dropMarker);routeLayer=L.polyline(route.coords,{color:'#1677ed',weight:5,opacity:.9}).addTo(map);pickupMarker=L.marker([a.lat,a.lon]).addTo(map).bindPopup('Pickup');dropMarker=L.marker([b.lat,b.lon]).addTo(map).bindPopup('Destination');map.fitBounds(routeLayer.getBounds(),{padding:[25,25]});let fare=type==='Rental'?rates[type]:Math.max(50,Math.ceil(route.km*rates[type]));return {km:route.km,minutes:route.minutes,fare,type};}
+async function calculate(pick,drop,type){if(!pick.trim()||!drop.trim())throw Error('Enter both pickup and destination.');const resolvePoint=async(input,place)=>{if(input.dataset.lat&&input.dataset.lon)return {lat:+input.dataset.lat,lon:+input.dataset.lon,label:place};return await geocode(place);};
+const [a,b]=await Promise.all([resolvePoint($('pickup'),pick),resolvePoint($('drop'),drop)]);const route=await routeDistance(a,b);if(routeLayer)map.removeLayer(routeLayer);if(pickupMarker)map.removeLayer(pickupMarker);if(dropMarker)map.removeLayer(dropMarker);routeLayer=L.polyline(route.coords,{color:'#1677ed',weight:5,opacity:.9}).addTo(map);pickupMarker=L.marker([a.lat,a.lon]).addTo(map).bindPopup('Pickup');dropMarker=L.marker([b.lat,b.lon]).addTo(map).bindPopup('Destination');map.fitBounds(routeLayer.getBounds(),{padding:[25,25]});let fare=type==='Rental'?rates[type]:Math.max(50,Math.ceil(route.km*rates[type]));return {km:route.km,minutes:route.minutes,fare,type};}
 $('estimateBtn').addEventListener('click',async()=>{const btn=$('estimateBtn');btn.disabled=true;btn.textContent='Calculating…';try{const res=await calculate($('farePickup').value,$('fareDrop').value,$('fareType').value);$('fareResult').style.display='block';$('fareAmount').textContent=res.type==='Rental'?'₹'+res.fare.toLocaleString('en-IN'):'₹'+res.fare.toLocaleString('en-IN');$('fareDetails').textContent=res.type==='Rental'?'Indicative starting rate per day. Confirm duration and availability.':`${res.km.toFixed(1)} km route · about ${res.minutes} min · indicative fare, not a confirmed quote.`;$('pickup').value=$('farePickup').value;$('drop').value=$('fareDrop').value;selectService(res.type); }catch(e){toast(e.message||'Unable to calculate route right now.')}finally{btn.disabled=false;btn.textContent='Calculate estimate →'}});
 $('bookingForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;const old=btn.textContent;btn.disabled=true;btn.textContent='Checking route…';try{let res=await calculate($('pickup').value,$('drop').value,selectedType);const date=$('rideDate').value?new Date($('rideDate').value).toLocaleString('en-IN'):'Not specified';const msg=`Hello Ranchi Ride, I would like to request a ride.%0A%0APickup: ${encodeURIComponent($('pickup').value)}%0ADestination: ${encodeURIComponent($('drop').value)}%0ARide type: ${encodeURIComponent(selectedType)}%0ADistance: ${res.km.toFixed(1)} km%0AEstimated fare: ₹${res.fare}%0ADate/time: ${encodeURIComponent(date)}%0A%0APlease confirm driver availability and final fare.`;toast(`Estimated distance ${res.km.toFixed(1)} km · fare ₹${res.fare}. Opening WhatsApp to request confirmation.`);setTimeout(()=>window.open('https://wa.me/917633801161?text='+msg,'_blank','noopener'),600);}catch(err){toast(err.message||'Could not calculate route. Check your place names and try again.')}finally{btn.disabled=false;btn.textContent=old;}});
 </script>
