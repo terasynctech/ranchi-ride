@@ -1,26 +1,16 @@
-# Ranchi Ride — live tracking setup
+RANCHI RIDE — TRACKING & BACKEND SETUP
 
-## Included
-- Redesigned responsive homepage with pickup/drop map picker and GPS location permission.
-- Admin and driver pages from the original ZIP (these still need to be migrated to Supabase before production use).
-- `supabase-setup.sql`: initial tables for rides and live driver GPS points.
+The refreshed website is a static GitHub Pages front-end. A static site cannot securely store bookings, authenticate drivers, dispatch jobs or publish live GPS updates across devices by itself.
 
-## Important: real tracking needs a backend
-A map alone cannot show a driver's live location on another phone. The driver phone must publish GPS coordinates to a shared database, and the customer/admin map must subscribe to updates. This project needs your own Supabase project URL and publishable/anon key before live cross-device tracking can be activated.
+To activate production operations:
+1. Create a dedicated Supabase project.
+2. Review and run the supplied supabase-setup.sql only after adapting it for production.
+3. Add strict row-level security and authentication for customers, admins and drivers.
+4. Add secure server-side booking creation, driver assignment and ride-status transitions.
+5. Have an authenticated driver explicitly start GPS sharing for an assigned trip.
+6. Have the customer tracking page subscribe to authorized location/status updates.
+7. Stop GPS sharing when the trip ends; protect personal and location data.
 
-## Set up Supabase
-1. Create a separate Supabase project for Ranchi Ride (do not reuse Cafe Aroma's database).
-2. Open SQL Editor and run `supabase-setup.sql`.
-3. In Project Settings > API, copy the Project URL and publishable key.
-4. Share only the Project URL and publishable/anon key here if you want me to wire them into the frontend. Never share your database password, service-role key, or secret key.
-5. Configure authentication and strict row-level security before public production use. The included development policies are permissive and are NOT production-ready.
+Never place a Supabase service-role key, database password or other secret in public HTML/JavaScript. The admin and driver pages included here are styled interface starters only. The tracking page is not live until the backend is connected.
 
-## Live tracking flow to implement next
-1. Admin assigns a ride to a verified driver.
-2. Driver signs in and taps “Start sharing location”; browser requests GPS permission (HTTPS required).
-3. Driver page publishes latitude/longitude every few seconds while a ride is active.
-4. Customer opens `/track.html?code=TRACKING_CODE` to see the ride status and driver marker update in real time.
-5. Stop publishing when the ride completes or driver stops sharing.
-
-## Mapping service notes
-The homepage uses OpenStreetMap tiles, Nominatim geocoding and OSRM routing for demonstration. Public endpoints have usage limits and are not guaranteed for commercial scale. Use a commercial routing/geocoding provider or a properly managed service before launch.
+Map services in the earlier project use public OpenStreetMap/Nominatim/OSRM endpoints. They are not guaranteed for commercial-scale use; follow each provider's usage policy or choose a managed commercial provider.
